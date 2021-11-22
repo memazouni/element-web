@@ -129,7 +129,13 @@ export default class WebPlatform extends VectorBasePlatform {
     }
 
     getAppVersion(): Promise<string> {
-        return Promise.resolve(process.env.VERSION);
+        let ver = process.env.VERSION;
+        if (process.env.VERSION =~ /^v[0-9]+.[0-9]+.[0-9]+(-.+)?$/) {
+            // if version looks like semver with leading v, strip it
+            // (matches scripts/package.sh)
+            ver = process.env.VERSION.substr(1);
+        }
+        return Promise.resolve(ver);
     }
 
     startUpdater() {
